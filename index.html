@@ -10,7 +10,7 @@
     <meta property="og:type" content="website">
     <meta property="og:description" content="Chronological list of VIS conference deadlines">
 
-    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="d3.min.js" charset="utf-8"></script>
   
     <style type="text/css">
         main {
@@ -139,13 +139,13 @@
                             year+=1
                         }
                         months.push(monthName+' '+year)
-                        console.log(months)
+                        //console.log(months)
                         currMonth = d.month
                     }
     
                     if (!venues.includes(d.venue)){
                         venues.push(d.venue)
-                        console.log(venues)
+                        //console.log(venues)
                     }
     
                     let article = main
