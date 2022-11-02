@@ -9,7 +9,7 @@
             return new Date(date.setFullYear(today.getFullYear() + 1))
     }
 
-    function estimateDate(date){
+    function estimateDate(date){ // For conferences that haven't posted their dates for next year
         if (date > today) {
             return date;
         } else {
@@ -22,14 +22,17 @@
     function getMonthName(monthNumber) {
         const date = new Date();
         date.setMonth(monthNumber - 1);
-
         return date.toLocaleString('en-US', { month: 'long' });
     }
 
-    function getRemainingTime(date) {
+    function getRemainingDays(date) {
         var timeleft = date - today
         var days = Math.floor(timeleft / (1000 * 60 * 60 * 24))
         return days
+    }
+    function getRemainingWeeks(date) {
+        days = getRemainingDays(date)
+        return Math.floor(days / 7)
     }
 
     function sanitize(s) {
@@ -44,6 +47,7 @@
         }
 
         let venues = []
+        let months = []
 
         d3.csv("/data/deadlines.csv").then(function(data){
             //console.log(data)
@@ -58,19 +62,24 @@
             let sortedData = data.slice().sort((a,b) => (d3.ascending(a.estimate, b.estimate)))
 
             let currMonth = -1
+            let year = today.getFullYear()
             
             sortedData.forEach((d, i, nodes) => {
 
                 if(currMonth != d.month) {
                     let monthName = getMonthName(d.month+1)
                     main.append('section').attr('id',monthName).attr('class','month').append('h1').text(monthName)
+                    if ((d.month < today.getMonth()) & (year < (today.getFullYear() + 1))){
+                        year+=1
+                    }
+                    months.push(monthName+' '+year)
+                    console.log(months)
                     currMonth = d.month
                 }
-                
 
                 if (!venues.includes(d.venue)){
                     venues.push(d.venue)
-                    //console.log(venues)
+                    console.log(venues)
                 }
 
                 let article = main
@@ -93,8 +102,17 @@
                         "* Estimated from last year's deadline: "+d.date
                     )
                 }
+                let daysRemaining = getRemainingDays(d.estimate)
+                let weeksRemaining = (daysRemaining > 14) ? `(~${Math.floor(daysRemaining / 7)} weeks)` : ''
+                let est_modifier = d.warn ? ' estimated' : ''
+                let countdown = [
+                    daysRemaining,
+                    est_modifier,
+                    ' day(s) remaining',
+                    weeksRemaining
+                ].join(' ')
                 article.append('h4')
-                    .text(getRemainingTime(d.estimate)+( d.warn ? ' estimated' : '')+' day(s) remaining')
+                    .text(countdown)
             })
         })
     })
