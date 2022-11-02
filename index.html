@@ -24,6 +24,10 @@
             padding-bottom: 5px;
             border-bottom: 2px solid #999;
         }
+        .Conference {
+            background-color: yellow;
+            text-align: right;
+        }
         .estimate {
             color: rgb(126, 14, 14);
         }
@@ -163,14 +167,20 @@
                         .classed('link', true)
                         .on("click", function() { window.open(d.url)})
                     article.append('h3')
-                        .text([expandName(d.venue)+':',expandName(d.type),(d.subtype != '' ? `(${expandName(d.subtype)})` : '') ].join(' '))
+                        .text([
+                            expandName(d.venue)+':',
+                            expandName(d.type),
+                            (d.subtype != '' ? `(${expandName(d.subtype)})` : ''),
+                            'Submission'
+                         ].join(' '))
                     article.append('h2')
                         .attr('class', d.warn ? 'estimate' : 'confirmed')
                         .text(d.estimate.toLocaleDateString('en-us', dateFormatSettings) + (d.warn ? " *" : ""))
                     if (d.warn) {
-                        article.append('p').attr('class', 'estimate').text(
-                            "* Estimated from last year's deadline: "+d.date
-                        )
+                        article.append('p').attr('class', 'estimate').html(
+                            "* Estimated from last year, "+d.date+" &#128394;"
+                        ).on('click', function() { window.open("https://github.com/janeadams/vis-deadlines/edit/main/data/deadlines.csv")})
+                        .style('cursor', 'pointer')
                     }
                     let daysRemaining = getRemainingDays(d.estimate)
                     let weeksRemaining = (daysRemaining > 14) ? `(~${Math.floor(daysRemaining / 7)} weeks)` : ''
