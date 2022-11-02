@@ -171,7 +171,7 @@
                             expandName(d.venue)+':',
                             expandName(d.type),
                             (d.subtype != '' ? `(${expandName(d.subtype)})` : ''),
-                            'Submission'
+                            d.type = 'Conference' ? '' : 'Submission'
                          ].join(' '))
                     article.append('h2')
                         .attr('class', d.warn ? 'estimate' : 'confirmed')
