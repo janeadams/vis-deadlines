@@ -5,30 +5,152 @@
     let today = new Date()
     let main = d3.select('main')
 
+    function addYear(date){
+            return new Date(date.setFullYear(today.getFullYear() + 1))
+    }
+
     function estimateDate(date){
-        var parsed = new Date(Date.parse(date))
-        if (parsed < today) {
-            return parsed;
+        if (date > today) {
+            return date;
         } else {
-            let newDate = parsed.setFullYear(parsed.getFullYear() + 1)
-            return newDate;
+            return addYear(date);
         }
     }
 
-    d3.csv("/data/deadlines.csv").then(function(data){
-        console.log(data)
-        data.forEach((d) => {
-                d.estimate = estimateDate(d.date)
-                d.warn == d.date != d.estimate
-                d.month = d.estimate.getMonth()
-                d.day = d.estimate.getDay()
-        })
-        let sortedData = data.slice().sort((a,b) => (d3.ascending(a.month, b.month) || d3.ascending(a.day, b.day))
-        
-        sortedData.forEach((d, i, nodes) => {
-                main.append('h1').attr('id',i).text(d.venue)
+    const dateFormatSettings = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+
+    function getMonthName(monthNumber) {
+        const date = new Date();
+        date.setMonth(monthNumber - 1);
+
+        return date.toLocaleString('en-US', { month: 'long' });
+    }
+
+    function getRemainingTime(date) {
+        var timeleft = date - today
+        var days = Math.floor(timeleft / (1000 * 60 * 60 * 24))
+        return days
+    }
+
+    function sanitize(s) {
+        return s.replace(/[^a-zA-Z0-9 ]/g, '')
+    }
+    
+    d3.json("/data/names.json").then(function(nameTable) {
+        let nameLookup = nameTable
+
+        function expandName(name){
+            return Object.keys(nameLookup).includes(name) ? nameLookup[name] : name
+        }
+
+        let venues = []
+
+        d3.csv("/data/deadlines.csv").then(function(data){
+            //console.log(data)
+            data.forEach((d) => {
+                    var parsedDate = new Date(Date.parse(d.date))
+                    d.estimate = estimateDate(parsedDate)
+                    d.warn = parsedDate != d.estimate
+                    d.month = d.estimate.getMonth()
+                    d.day = d.estimate.getDay()
+            })
+
+            let sortedData = data.slice().sort((a,b) => (d3.ascending(a.estimate, b.estimate)))
+
+            let currMonth = -1
+            
+            sortedData.forEach((d, i, nodes) => {
+
+                if(currMonth != d.month) {
+                    let monthName = getMonthName(d.month+1)
+                    main.append('section').attr('id',monthName).attr('class','month').append('h1').text(monthName)
+                    currMonth = d.month
+                }
+                
+
+                if (!venues.includes(d.venue)){
+                    venues.push(d.venue)
+                    //console.log(venues)
+                }
+
+                let article = main
+                    .append('article')
+                    .attr('id',i)
+                    .attr('class',sanitize(`event ${d.venue} ${d.type} ${d.subtype}`))
+
+                article.append('h1')
+                    .text([d.venue,d.type,d.subtype].join(' '))
+                    .style('cursor', 'pointer')
+                    .classed('link', true)
+                    .on("click", function() { window.open(d.url)})
+                article.append('h3')
+                    .text([expandName(d.venue),expandName(d.type),expandName(d.subtype)].join(' '))
+                article.append('h2')
+                    .attr('class', d.warn ? 'estimate' : 'confirmed')
+                    .text(d.estimate.toLocaleDateString('en-us', dateFormatSettings) + (d.warn ? " *" : ""))
+                if (d.warn) {
+                    article.append('p').attr('class', 'estimate').text(
+                        "* Estimated from last year's deadline: "+d.date
+                    )
+                }
+                article.append('h4')
+                    .text(getRemainingTime(d.estimate)+( d.warn ? ' estimated' : '')+' day(s) remaining')
+            })
         })
     })
+
 </script>
-<main>
-</main>
+<style type="text/css">
+    main {
+        width: 80%;
+        margin: 0 auto;
+        max-width: 500px;
+    }
+    article {
+        padding: 10px 10px 40px 20px;
+        margin-bottom: 0;
+        padding-bottom: 5px;
+        border-bottom: 2px solid #999;
+    }
+    .estimate {
+        color: rgb(126, 14, 14);
+    }
+    .link {
+        text-decoration: underline;
+        color: rgb(13, 71, 153);
+    }
+    .link:hover {
+        color: rgb(70, 134, 224);
+    }
+    h1, h2 {
+        margin-bottom: 0;
+    }
+    h1 {
+        font-size: 1.4em
+    }
+    h1, h3 {
+        font-weight: bold;
+    }
+    .month h1 {
+        font-size: 2em;
+        color: #666;
+        margin-top: 40px;
+    }
+    h3, h4 {
+        margin-top: 0;
+        margin-bottom: 15px;
+        font-size: 1em;
+    }
+    h2, h4 {
+        font-weight: normal;
+        /*font-style: italic;*/
+    }
+    .estimate {
+        font-style: italic;
+        margin-top: 0;
+    }
+</style>
+<body>
+    <nav></nav>
+    <main></main>
+</body>
