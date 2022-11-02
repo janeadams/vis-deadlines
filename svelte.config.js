@@ -9,6 +9,11 @@ const config = {
 
 	kit: {
 		/** target: '#svelte',**/
+		vite: {
+			optimizeDeps: {
+				include: ['papaparse']
+			}
+		},
 		adapter: adapter({
 			pages: 'build',
     			assets: 'build',
