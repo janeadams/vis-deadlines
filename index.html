@@ -1,1 +1,34 @@
-<h1>Hello!</h1>
+<script type="module">
+
+    import * as d3 from "https://cdn.skypack.dev/d3@7";
+    
+    let today = new Date()
+    let main = d3.select('main')
+
+    function estimateDate(date){
+        var parsed = new Date(Date.parse(date))
+        if (parsed < today) {
+            return parsed;
+        } else {
+            let newDate = parsed.setFullYear(parsed.getFullYear() + 1)
+            return newDate;
+        }
+    }
+
+    d3.csv("/data/deadlines.csv").then(function(data){
+        console.log(data)
+        data.forEach((d) => {
+                d.estimate = estimateDate(d.date)
+                d.warn == d.date != d.estimate
+                d.month = d.estimate.getMonth()
+                d.day = d.estimate.getDay()
+        })
+        let sortedData = data.slice().sort((a,b) => (d3.ascending(a.month, b.month) || d3.ascending(a.day, b.day))
+        
+        sortedData.forEach((d, i, nodes) => {
+                main.append('h1').attr('id',i).text(d.venue)
+        })
+    })
+</script>
+<main>
+</main>
