@@ -14,7 +14,7 @@ ECSCW,Notes,,2/20/2023,https://ecscw.eusset.eu/2023/notes/
 ECSCW,Paper,Exploratory,2/20/2023,https://ecscw.eusset.eu/2023/exploratory-papers/
 ECSCW,DC,,2/20/2023,https://ecscw.eusset.eu/2023/doctoral-colloquium/
 ECSCW,Poster,,2/20/2023,https://ecscw.eusset.eu/2023/posters-demo/
-HCxAI at CHI,Paper,,2/22/2022,https://hcxai.jimdosite.com/
+HCxAI,Paper,,2/22/2022,https://hcxai.jimdosite.com/
 EuroVis,Short Paper,,2/28/2022,https://conferences.eg.org/eurovis2023/for-submitters/important-dates/
 VL/HCC,Abstract,,3/23/2022,https://conf.researchr.org/track/vlhcc-2022/vlhcc-2022-vl-hcc-main-conference?#Call-for-Research-Papers
 VL/HCC,Paper,,3/30/2022,https://conf.researchr.org/track/vlhcc-2022/vlhcc-2022-vl-hcc-main-conference?#Call-for-Research-Papers
@@ -27,7 +27,7 @@ SIGMOD,Paper,Cycle A,4/15/2022,https://2023.sigmod.org/calls_papers_important_da
 AVI,Poster,,4/16/2022,https://sites.google.com/di.uniroma1.it/avi2022/calls/posters-and-demo
 VL/HCC,Poster,,5/13/2022,https://conf.researchr.org/track/vlhcc-2022/vlhcc-2022-posters-and-showpieces?#Call-for-Posters-and-Showpieces
 VIS,SV,Sign-up begins,5/15/2022,http://www.vissv.org/
-VDS at ACM KDD,Paper,,5/26/2022,http://www.visualdatascience.org/2022/cfp/
+VDS at KDD,Paper,,5/26/2022,http://www.visualdatascience.org/2022/cfp/
 Graph Drawing,Abstract,,6/1/2022,https://graphdrawing.github.io/gd2022//
 VISAP (Arts Program at VIS),Art,,6/2/2022,https://visap.net/2022/
 Graph Drawing,Paper,,6/8/2022,https://graphdrawing.github.io/gd2022//
@@ -40,7 +40,7 @@ LDAV,Paper,,6/20/2022,https://ldav.org/
 VizSec,Paper,,6/22/2022,https://vizsec.org/
 VISSOFT,Paper,Technical Track,6/27/2022,https://vissoft.info/2022/index.html
 BELIV,Paper,,7/6/2022,https://beliv-workshop.github.io/
-VDS at IEEE VIS,Paper,,7/7/2022,http://www.visualdatascience.org/2022/cfp/
+VDS at VIS,Paper,,7/7/2022,http://www.visualdatascience.org/2022/cfp/
 VAST Challenge,Challenge,,7/13/2022,https://vast-challenge.github.io/2022/submissions.html
 CSCW,Paper,July Cycle,7/15/2022,https://cscw.acm.org/2023/
 SIGMOD Cycle B,Paper,,7/15/2022,https://2023.sigmod.org/calls_papers_important_dates.shtml
@@ -74,7 +74,7 @@ IVAPP,Paper,,11/1/2022,https://ivapp.scitevents.org/
 CHI,DC,,11/10/2022,https://chi2023.acm.org/for-authors/doctoral-consortium/
 EuroVis,Abstract,Full Papers,11/25/2022,https://conferences.eg.org/eurovis2023/for-submitters/important-dates/
 EuroVis,Full Paper,,12/2/2022,https://conferences.eg.org/eurovis2023/for-submitters/important-dates/
-ACM IUI,SV,Sign-up ends,12/2/2022,https://iui.acm.org/2023/call_for_student_volunteers.html
+IUI,SV,Sign-up ends,12/2/2022,https://iui.acm.org/2023/call_for_student_volunteers.html
 PacificVis,Notes,,12/9/2022,https://pvis2023.github.io/pvis2023/pages/cfps/cfp_notes
 alt.chi,Paper,,12/15/2022,https://chi2023.acm.org/for-authors/alt-chi/
 VISIGRAPP,Paper,,12/20/2022,https://visigrapp.scitevents.org/ImportantInformation.aspx

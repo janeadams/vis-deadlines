@@ -154,12 +154,16 @@
                         .attr('class',sanitize(`event ${d.venue} ${d.type} ${d.subtype}`))
     
                     article.append('h1')
-                        .text([d.venue,d.type,d.subtype].join(' '))
+                        .text([
+                            d.venue,
+                            d.type,
+                            //(d.subtype != '' ? `(${d.subtype})` : '')
+                        ].join(' '))
                         .style('cursor', 'pointer')
                         .classed('link', true)
                         .on("click", function() { window.open(d.url)})
                     article.append('h3')
-                        .text([expandName(d.venue),expandName(d.type),expandName(d.subtype)].join(' '))
+                        .text([expandName(d.venue)+':',expandName(d.type),(d.subtype != '' ? `(${expandName(d.subtype)})` : '') ].join(' '))
                     article.append('h2')
                         .attr('class', d.warn ? 'estimate' : 'confirmed')
                         .text(d.estimate.toLocaleDateString('en-us', dateFormatSettings) + (d.warn ? " *" : ""))
