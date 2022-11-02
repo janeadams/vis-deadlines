@@ -1,174 +1,187 @@
-<script type="module">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+    <title>Visualization Conference Deadlines</title>
+    <meta name="description" content="Chronological list of VIS conference deadlines">
+    <meta name="author" content="Jane Adams">
+  
+    <meta property="og:title" content="Visualization Conference Deadlines">
+    <meta property="og:type" content="website">
+    <meta property="og:description" content="Chronological list of VIS conference deadlines">
 
-    import * as d3 from "https://cdn.skypack.dev/d3@7";
-    
-    let today = new Date()
-    let main = d3.select('main')
-
-    function addYear(date){
-            return new Date(date.setFullYear(today.getFullYear() + 1))
-    }
-
-    function estimateDate(date){ // For conferences that haven't posted their dates for next year
-        if (date > today) {
-            return date;
-        } else {
-            return addYear(date);
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+  
+    <style type="text/css">
+        main {
+            width: 80%;
+            margin: 0 auto;
+            max-width: 500px;
         }
-    }
-
-    const dateFormatSettings = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-
-    function getMonthName(monthNumber) {
-        const date = new Date();
-        date.setMonth(monthNumber - 1);
-        return date.toLocaleString('en-US', { month: 'long' });
-    }
-
-    function getRemainingDays(date) {
-        var timeleft = date - today
-        var days = Math.floor(timeleft / (1000 * 60 * 60 * 24))
-        return days
-    }
-    function getRemainingWeeks(date) {
-        days = getRemainingDays(date)
-        return Math.floor(days / 7)
-    }
-
-    function sanitize(s) {
-        return s.replace(/[^a-zA-Z0-9 ]/g, '')
-    }
-    
-    d3.json("/data/names.json").then(function(nameTable) {
-        let nameLookup = nameTable
-
-        function expandName(name){
-            return Object.keys(nameLookup).includes(name) ? nameLookup[name] : name
+        article {
+            padding: 10px 10px 40px 20px;
+            margin-bottom: 0;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #999;
         }
-
-        let venues = []
-        let months = []
-
-        d3.csv("/data/deadlines.csv").then(function(data){
-            //console.log(data)
-            data.forEach((d) => {
-                    var parsedDate = new Date(Date.parse(d.date))
-                    d.estimate = estimateDate(parsedDate)
-                    d.warn = parsedDate != d.estimate
-                    d.month = d.estimate.getMonth()
-                    d.day = d.estimate.getDay()
-            })
-
-            let sortedData = data.slice().sort((a,b) => (d3.ascending(a.estimate, b.estimate)))
-
-            let currMonth = -1
-            let year = today.getFullYear()
-            
-            sortedData.forEach((d, i, nodes) => {
-
-                if(currMonth != d.month) {
-                    let monthName = getMonthName(d.month+1)
-                    main.append('section').attr('id',monthName).attr('class','month').append('h1').text(monthName)
-                    if ((d.month < today.getMonth()) & (year < (today.getFullYear() + 1))){
-                        year+=1
-                    }
-                    months.push(monthName+' '+year)
-                    console.log(months)
-                    currMonth = d.month
-                }
-
-                if (!venues.includes(d.venue)){
-                    venues.push(d.venue)
-                    console.log(venues)
-                }
-
-                let article = main
-                    .append('article')
-                    .attr('id',i)
-                    .attr('class',sanitize(`event ${d.venue} ${d.type} ${d.subtype}`))
-
-                article.append('h1')
-                    .text([d.venue,d.type,d.subtype].join(' '))
-                    .style('cursor', 'pointer')
-                    .classed('link', true)
-                    .on("click", function() { window.open(d.url)})
-                article.append('h3')
-                    .text([expandName(d.venue),expandName(d.type),expandName(d.subtype)].join(' '))
-                article.append('h2')
-                    .attr('class', d.warn ? 'estimate' : 'confirmed')
-                    .text(d.estimate.toLocaleDateString('en-us', dateFormatSettings) + (d.warn ? " *" : ""))
-                if (d.warn) {
-                    article.append('p').attr('class', 'estimate').text(
-                        "* Estimated from last year's deadline: "+d.date
-                    )
-                }
-                let daysRemaining = getRemainingDays(d.estimate)
-                let weeksRemaining = (daysRemaining > 14) ? `(~${Math.floor(daysRemaining / 7)} weeks)` : ''
-                let est_modifier = d.warn ? ' estimated' : ''
-                let countdown = [
-                    daysRemaining,
-                    est_modifier,
-                    ' day(s) remaining',
-                    weeksRemaining
-                ].join(' ')
-                article.append('h4')
-                    .text(countdown)
-            })
-        })
-    })
-
-</script>
-<style type="text/css">
-    main {
-        width: 80%;
-        margin: 0 auto;
-        max-width: 500px;
-    }
-    article {
-        padding: 10px 10px 40px 20px;
-        margin-bottom: 0;
-        padding-bottom: 5px;
-        border-bottom: 2px solid #999;
-    }
-    .estimate {
-        color: rgb(126, 14, 14);
-    }
-    .link {
-        text-decoration: underline;
-        color: rgb(13, 71, 153);
-    }
-    .link:hover {
-        color: rgb(70, 134, 224);
-    }
-    h1, h2 {
-        margin-bottom: 0;
-    }
-    h1 {
-        font-size: 1.4em
-    }
-    h1, h3 {
-        font-weight: bold;
-    }
-    .month h1 {
-        font-size: 2em;
-        color: #666;
-        margin-top: 40px;
-    }
-    h3, h4 {
-        margin-top: 0;
-        margin-bottom: 15px;
-        font-size: 1em;
-    }
-    h2, h4 {
-        font-weight: normal;
-        /*font-style: italic;*/
-    }
-    .estimate {
-        font-style: italic;
-        margin-top: 0;
-    }
-</style>
+        .estimate {
+            color: rgb(126, 14, 14);
+        }
+        .link {
+            text-decoration: underline;
+            color: rgb(13, 71, 153);
+        }
+        .link:hover {
+            color: rgb(70, 134, 224);
+        }
+        h1, h2 {
+            margin-bottom: 0;
+        }
+        h1 {
+            font-size: 1.4em
+        }
+        h1, h3 {
+            font-weight: bold;
+        }
+        .month h1 {
+            font-size: 2em;
+            color: #666;
+            margin-top: 40px;
+        }
+        h3, h4 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 1em;
+        }
+        h2, h4 {
+            font-weight: normal;
+            /*font-style: italic;*/
+        }
+        .estimate {
+            font-style: italic;
+            margin-top: 0;
+        }
+    </style>
+</head>
 <body>
     <nav></nav>
     <main></main>
+   <script type="text/javascript">
+        
+        let today = new Date()
+        let main = d3.select('main')
+    
+        function addYear(date){
+                return new Date(date.setFullYear(today.getFullYear() + 1))
+        }
+    
+        function estimateDate(date){ // For conferences that haven't posted their dates for next year
+            if (date > today) {
+                return date;
+            } else {
+                return addYear(date);
+            }
+        }
+    
+        const dateFormatSettings = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    
+        function getMonthName(monthNumber) {
+            const date = new Date();
+            date.setMonth(monthNumber - 1);
+            return date.toLocaleString('en-US', { month: 'long' });
+        }
+    
+        function getRemainingDays(date) {
+            var timeleft = date - today
+            var days = Math.floor(timeleft / (1000 * 60 * 60 * 24))
+            return days
+        }
+        function getRemainingWeeks(date) {
+            days = getRemainingDays(date)
+            return Math.floor(days / 7)
+        }
+    
+        function sanitize(s) {
+            return s.replace(/[^a-zA-Z0-9 ]/g, '')
+        }
+        
+        d3.json("./data/names.json").then(function(nameTable) {
+            let nameLookup = nameTable
+    
+            function expandName(name){
+                return Object.keys(nameLookup).includes(name) ? nameLookup[name] : name
+            }
+    
+            let venues = []
+            let months = []
+    
+            d3.csv("/data/deadlines.csv").then(function(data){
+                //console.log(data)
+                data.forEach((d) => {
+                        var parsedDate = new Date(Date.parse(d.date))
+                        d.estimate = estimateDate(parsedDate)
+                        d.warn = parsedDate != d.estimate
+                        d.month = d.estimate.getMonth()
+                        d.day = d.estimate.getDay()
+                })
+    
+                let sortedData = data.slice().sort((a,b) => (d3.ascending(a.estimate, b.estimate)))
+    
+                let currMonth = -1
+                let year = today.getFullYear()
+                
+                sortedData.forEach((d, i, nodes) => {
+    
+                    if(currMonth != d.month) {
+                        let monthName = getMonthName(d.month+1)
+                        main.append('section').attr('id',monthName).attr('class','month').append('h1').text(monthName)
+                        if ((d.month < today.getMonth()) & (year < (today.getFullYear() + 1))){
+                            year+=1
+                        }
+                        months.push(monthName+' '+year)
+                        console.log(months)
+                        currMonth = d.month
+                    }
+    
+                    if (!venues.includes(d.venue)){
+                        venues.push(d.venue)
+                        console.log(venues)
+                    }
+    
+                    let article = main
+                        .append('article')
+                        .attr('id',i)
+                        .attr('class',sanitize(`event ${d.venue} ${d.type} ${d.subtype}`))
+    
+                    article.append('h1')
+                        .text([d.venue,d.type,d.subtype].join(' '))
+                        .style('cursor', 'pointer')
+                        .classed('link', true)
+                        .on("click", function() { window.open(d.url)})
+                    article.append('h3')
+                        .text([expandName(d.venue),expandName(d.type),expandName(d.subtype)].join(' '))
+                    article.append('h2')
+                        .attr('class', d.warn ? 'estimate' : 'confirmed')
+                        .text(d.estimate.toLocaleDateString('en-us', dateFormatSettings) + (d.warn ? " *" : ""))
+                    if (d.warn) {
+                        article.append('p').attr('class', 'estimate').text(
+                            "* Estimated from last year's deadline: "+d.date
+                        )
+                    }
+                    let daysRemaining = getRemainingDays(d.estimate)
+                    let weeksRemaining = (daysRemaining > 14) ? `(~${Math.floor(daysRemaining / 7)} weeks)` : ''
+                    let est_modifier = d.warn ? ' estimated' : ''
+                    let countdown = [
+                        daysRemaining,
+                        est_modifier,
+                        ' day(s) remaining',
+                        weeksRemaining
+                    ].join(' ')
+                    article.append('h4')
+                        .text(countdown)
+                })
+            })
+        })
+    
+    </script>
 </body>
