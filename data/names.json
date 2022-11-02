@@ -34,5 +34,7 @@
 "SIGGRAPH": "ACM Special Interest Group in Computer Graphics",
 "LDAV": "IEEE Symposium on Large Data Analysis and Visualization",
 "VDS at KDD": "Visualization in Data Science at ACM Knowledge Discovery and Data Mining",
-"VDS at VIS": "Visualization in Data Science at IEEE Visualization Conference"
+"VDS at VIS": "Visualization in Data Science at IEEE Visualization Conference",
+"STAR": "State of the Art Report",
+"STAR Sketch": "State of the Art Report (STAR) Sketch"
 }
