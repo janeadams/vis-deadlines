@@ -10,7 +10,7 @@
     <meta property="og:type" content="website">
     <meta property="og:description" content="Chronological list of VIS conference deadlines">
 
-    <script src="d3.min.js" charset="utf-8"></script>
+    <script src="./d3.min.js" charset="utf-8"></script>
   
     <style type="text/css">
         main {
@@ -115,7 +115,7 @@
             let venues = []
             let months = []
     
-            d3.csv("/data/deadlines.csv").then(function(data){
+            d3.csv("./data/deadlines.csv").then(function(data){
                 //console.log(data)
                 data.forEach((d) => {
                         var parsedDate = new Date(Date.parse(d.date))
